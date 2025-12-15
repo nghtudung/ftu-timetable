@@ -42,9 +42,11 @@ Extension sẽ hoạt động tốt nhất trên các trình duyệt nhân Chrom
 Ủng hộ dự án qua các nền tảng sau...
 
 BIDV 8863663977 NGHIEM TUAN DUNG
+
 ![bidv](./markdown-assets/bidv.png)
 
 ZaloPay NGHIEM TUAN DUNG
+
 ![zalopay](./markdown-assets/zalopay.png)
 
 Thank you so much! Cảm ơn rất nhiều! Merci beaucoup! ありがとうございます！ ¡Muchas gracias! 谢谢! Большое спасибо! ຂອບໃຈຫຼາຍໆ! Muito obrigada! ...
