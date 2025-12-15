@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "FTU JWT Viewer",
+    "name": "FTU Timetable",
     "version": "2.0",
     "permissions": ["webRequest", "storage", "tabs"],
     "host_permissions": ["https://ftugate.ftu.edu.vn/*"],
@@ -12,11 +12,5 @@
         "48": "avt.png",
         "128": "avt.png"
     },
-    "action": {
-        "default_icon": {
-            "16": "avt.png",
-            "48": "avt.png",
-            "128": "avt.png"
-        }
-    }
+    "action": {}
 }
