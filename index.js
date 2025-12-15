@@ -1,5 +1,6 @@
 const pid = document.getElementById("data");
 let auth;
+let ctdtRows = [];
 
 chrome.storage.local.get("initData", (res) => {
     auth = res.initData.jwt;
@@ -30,7 +31,11 @@ async function get() {
         if (!res.ok) throw new Error(res.status);
 
         const data = await res.json();
-        renderTable(data.data.ds_nhom_to);
+
+        ctdtRows = data.data.ds_nhom_to.filter((r) => r.is_ctdt === true);
+
+        console.log(ctdtRows);
+        renderTable(ctdtRows);
     } catch (e) {
         console.error(e);
     }
@@ -108,3 +113,23 @@ function setColumnWidth(index, width) {
         }
     });
 }
+
+document.getElementById("btn-download").addEventListener("click", () => {
+    if (!ctdtRows.length) {
+        alert("No data!");
+        return;
+    }
+
+    const jsonStr = JSON.stringify(ctdtRows, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `thunopro_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
