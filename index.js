@@ -32,9 +32,27 @@ async function get() {
 
         const data = await res.json();
 
-        ctdtRows = data.data.ds_nhom_to.filter((r) => r.is_ctdt === true);
+        const dsMonHoc = data?.data?.ds_mon_hoc || [];
+        const monTenMap = {};
 
-        console.log(ctdtRows);
+        dsMonHoc.forEach((m) => {
+            // m: { ma, ten, ten_eg }
+            if (m?.ma && m?.ten) {
+                monTenMap[m.ma] = m.ten;
+            }
+        });
+
+        ctdtRows = (data?.data?.ds_nhom_to || [])
+            .filter((r) => r?.is_ctdt === true)
+            .map((r) => {
+                const tenVN = monTenMap[r.ma_mon];
+                return {
+                    ...r,
+                    ten_mon: tenVN ?? r.ten_mon ?? "",
+                };
+            });
+
+        console.log("CTDT (overwritten ten_mon):", ctdtRows);
         renderTable(ctdtRows);
     } catch (e) {
         console.error(e);
@@ -54,9 +72,9 @@ function renderTable(rows) {
         tr.innerHTML = `
             <td>${i + 1}</td>
             <td class="mono">${r.ma_mon}</td>
-            <td>${r.ten_mon_eg || ""}</td>
-            <td>${r.so_tc}</td>
-            <td class="mono">${r.nhom_to}</td>
+            <td>${r.ten_mon || r.ten_mon_eg || ""}</td>
+            <td>${r.so_tc ?? ""}</td>
+            <td class="mono">${r.nhom_to ?? ""}</td>
             <td class="mono">${(r.ds_khoa || []).join(", ")}</td>
             <td class="mono">${dk} / ${cp} / <b>${cl}</b></td>
             <td>${(r.tkb || "").replaceAll("<hr>", "<br>")}</td>
@@ -73,6 +91,8 @@ makeTableResizable();
 
 function makeTableResizable() {
     const table = document.querySelector("table");
+    if (!table) return;
+
     const ths = table.querySelectorAll("th");
 
     ths.forEach((th, colIndex) => {
@@ -92,7 +112,7 @@ function makeTableResizable() {
 
         function onMouseMove(e) {
             const newWidth = startWidth + (e.pageX - startX);
-            if (newWidth < 40) return; // min width
+            if (newWidth < 40) return;
             setColumnWidth(colIndex, newWidth);
         }
 
@@ -105,6 +125,8 @@ function makeTableResizable() {
 
 function setColumnWidth(index, width) {
     const table = document.querySelector("table");
+    if (!table) return;
+
     table.querySelectorAll("tr").forEach((row) => {
         const cell = row.children[index];
         if (cell) {
@@ -114,22 +136,25 @@ function setColumnWidth(index, width) {
     });
 }
 
-document.getElementById("btn-download").addEventListener("click", () => {
-    if (!ctdtRows.length) {
-        alert("No data!");
-        return;
-    }
+const btn = document.getElementById("btn-download");
+if (btn) {
+    btn.addEventListener("click", () => {
+        if (!ctdtRows.length) {
+            alert("No data!");
+            return;
+        }
 
-    const jsonStr = JSON.stringify(ctdtRows, null, 2);
-    const blob = new Blob([jsonStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+        const jsonStr = JSON.stringify(ctdtRows, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `thunopro_${Date.now()}.json`;
-    document.body.appendChild(a);
-    a.click();
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `thunopro_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
 
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-});
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}

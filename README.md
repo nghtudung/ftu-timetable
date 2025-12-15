@@ -1,5 +1,7 @@
 > 🄯 GieJack 2021-2025
 
+# DISCLAIMER: Dự án hoàn toàn phi lợi nhuận, không phục vụ mục đích kinh doanh, kinh tế. Đây chỉ là dự án phục vụ mục đích học tập, học hỏi, không hề hack hay làm gì nguy hiểm.
+
 # Hướng dẫn sử dụng
 
 ### Bước 1: Clone repository này về
